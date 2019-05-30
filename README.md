@@ -5,9 +5,11 @@ In addition, this guide will also show you how to create a Go app that exposes t
 ***For those who want to save time, pull the documents from this repository. This tutorial will include the creation of the files in this repository***
 
 # Table of Contents
-1. [Pre-requisites](#Prereq)
-2. [Create a working directory](#working)
-3. [Third Example](#third-example)
+0. [Pre-requisites](#Prereq)
+1. [Create a working directory](#working)
+2. [Creating Go App (Optional)](#go)
+3. [Setting up the Kubernetes Cluster and Prometheus](#kubernetes)
+4. [Connecting Grafana](#grafana)
 
 ## Pre-requisites <a name="prereq"></a>
 - Basic Kubernetes knowledge
@@ -137,7 +139,7 @@ CMD ["hello"]
 ...Example: **docker push xienokia/hello-world**
 7. We will be using the image off of **xienokia/hello-world** for this tutorial
 
-## Step 3: Setting up the Kubernetes Cluster <a name="kubernetes">
+## Step 3: Setting up the Kubernetes Cluster and Prometheus <a name="kubernetes">
 
 Now we need to setup the Kubernetes Cluster inside Minikube. The process will include the following:
 1. Starting minikube
