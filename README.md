@@ -96,12 +96,12 @@ func main() {
 5. Navigate inside the Terminal to the **Downloads/workspace/src/hello** folder
 6. Run the following commands: **go build**
 7. By running that, it will create a build file, which to compile, run the following command: **./hello**
-8. The server will now run. To run the demo site, navigate to: **localhost:8080** in your browser. To get the metrics, go to ...**localhost:8080/metrics** in your browser.  
+8. The server will now run. To run the demo site, navigate to: **localhost:8080** in your browser. To get the metrics, go to **localhost:8080/metrics** in your browser.  
 
 Now we need to create a docker image of the hello Go App we just created and upload the image onto Dockerhub.
-1. Create a Dockerfile inside the **Downloads/workspace/src/hello** folder. The file shouldn't have an extension and should be ...called Dockerfile, case sensitive. 
+1. Create a Dockerfile inside the **Downloads/workspace/src/hello** folder. The file shouldn't have an extension and should be called Dockerfile, case sensitive. 
 2. Inside the Dockerfile write the following:
-...**Note: You might need to edit the file Maintainer with your own name and email**
+**Note: You might need to edit the file Maintainer with your own name and email**
 ```
 
 # Dockerfile References: https://docs.docker.com/engine/reference/builder/
@@ -133,10 +133,10 @@ CMD ["hello"]
 ```
 3. Inside the terminal, go to the **Downloads/workspace/src/hello** folder
 4. Create the image by running the command: **docker build . -t (insert Dockerhub username)/(insert Dockerhub repository)**
-...Example: **docker build . -t xienokia/hello-world**
+Example: **docker build . -t xienokia/hello-world**
 5. Login to your Dockerhub by running the command: **docker login**
 6. Now, push the image by running: **docker push (insert Dockerhub username)/(insert Dockerhub repository)**
-...Example: **docker push xienokia/hello-world**
+Example: **docker push xienokia/hello-world**
 7. We will be using the image off of **xienokia/hello-world** for this tutorial
 
 ## Step 3: Setting up the Kubernetes Cluster and Prometheus <a name="kubernetes">
@@ -159,7 +159,7 @@ Now we need to setup the Kubernetes Cluster inside Minikube. The process will in
 
 1. Create a namespace called **test** by typing the command: **kubectl create namespace test**
 2. To verify you have created the **test** namespace, type the command: **kubectl get namespaces**
-...**test** should appear as one of the namespaces.
+**test** should appear as one of the namespaces.
 
 ### 3. Deploying services
 
@@ -203,11 +203,11 @@ spec:
 ```
 and save into a **sample.yaml** file into the **Downloads/workspace** folder (or wherever you choose to save it).
 2. Apply the **sample.yaml** file in minikube by typing: **kubectl apply -f sample.yaml**
-...Note: if you chose to save the yaml file into a custom location, type the command: **kubectl apply -f (sample.yaml file location)**
+Note: if you chose to save the yaml file into a custom location, type the command: **kubectl apply -f (sample.yaml file location)**
 3. Make sure the pod is working by running: **kubectl -n test get pods**
 4. To check if the service is working inside the namespace type: **kubectl -n test get svc** 
-5. To see the result of the deployment, type: **kubectl cluster-info**. Observe the "Kubernetes Master is running at..." IP ...address. In a browser, type the following: **(Kubernetes Master IP address):30901**. For example: (192.168.99.129:30901). 
-6. To go to the metrics, type the following in the address bar: **(Kubernetes Master IP address):30901/metrics**. For example: ...(192.168.99.129:30901/metrics). You should see the *http_requests* metric increase as traffic increases to the site.
+5. To see the result of the deployment, type: **kubectl cluster-info**. Observe the "Kubernetes Master is running at..." IP address. In a browser, type the following: **(Kubernetes Master IP address):30901**. For example: (192.168.99.129:30901). 
+6. To go to the metrics, type the following in the address bar: **(Kubernetes Master IP address):30901/metrics**. For example: (192.168.99.129:30901/metrics). You should see the *http_requests* metric increase as traffic increases to the site.
 
 ### 4. Deploying Prometheus Operator and Service Accounts <a name="prometheus-operator"></a>
 
@@ -455,7 +455,7 @@ spec:
 and save into a **expose.yaml** file into the **Downloads/workspace** folder (or wherever you choose to save it).
 
 4. Apply the **expose.yaml** file in minikube by typing: **kubectl apply -f expose.yaml**
-...Doing so will help expose Prometheus to the 30900 port (specified in the **expose.yaml** file)
+Doing so will help expose Prometheus to the 30900 port (specified in the **expose.yaml** file)
 5. To check if Prometheus is installed correctly, type: **kubectl cluster-info** to obtain the Kubernetes Master IP. 
 6. In the browser, type: **(Kubernetes Master IP):30900** and Prometheus should pop up. For example: **192.168.99.129:30900**
 
@@ -483,7 +483,7 @@ spec:
 and save into a **service-monitors.yaml** file into the **Downloads/workspace** folder (or wherever you choose to save it).
 
 2. Apply the **service-monitors.yaml** file in minikube by typing: **kubectl apply -f service-monitors.yaml**
-3. We should now be able to see the service monitors in Prometheus. Go to Prometheus by typing: **(Kubernetes Master ...IP):30900** in the browser. 
+3. We should now be able to see the service monitors in Prometheus. Go to Prometheus by typing: **(Kubernetes Master IP):30900** in the browser. 
 4. Click **Status -> Service Discovery** in the menu bar
 5. Make sure the service is being discovered by the service monitor
 6. Click **Status -> Targets** in the menu bar
@@ -498,16 +498,16 @@ Grafana takes Prometheus and displays a more appealing chart.
 ### Install Grafana
 1. Install Grafana by running: **docker run -d --name=grafana -p 3000:3000 grafana/grafana**
 2. Now, access Grafana by going to your browser URL and typing: **http://localhost:3000**
-...The default login is:
-...username: admin
-...password: admin
+The default login is:
+username: admin
+password: admin
 
 ### Creating Prometheus Data Source
 1. Click on the Grafana Logo to open the sidebar menu
 2. Click on **Data Sources** in the side bar
 3. Click **Add New**
 4. Select **Prometheus** as the type of data source
-5. Type the appropriate Prometheus server URL: **(Kubernetes Master ...IP):30900**
+5. Type the appropriate Prometheus server URL: **(Kubernetes Master IP):30900**
 6. Finish by clicking **Add** to save the data source
 
 ### Creating the Grafana Dashboard
