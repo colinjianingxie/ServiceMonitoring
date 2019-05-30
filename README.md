@@ -491,6 +491,34 @@ and save into a **service-monitors.yaml** file into the **Downloads/workspace** 
 8. If all goes well, click **Graph** in the menu bar, and type the query: **http_requests_total**
 9. Going to the app should now trigger http requests, which prometheus can show
 
+## Setting up Grafana <a name="grafana"></a>
+
+Grafana takes Prometheus and displays a more appealing chart.
+
+### Install Grafana
+1. Install Grafana by running: **docker run -d --name=grafana -p 3000:3000 grafana/grafana**
+2. Now, access Grafana by going to your browser URL and typing: **http://localhost:3000**
+...The default login is:
+...username: admin
+...password: admin
+
+### Creating Prometheus Data Source
+1. Click on the Grafana Logo to open the sidebar menu
+2. Click on **Data Sources** in the side bar
+3. Click **Add New**
+4. Select **Prometheus** as the type of data source
+5. Type the appropriate Prometheus server URL: **(Kubernetes Master ...IP):30900**
+6. Finish by clicking **Add** to save the data source
+
+### Creating the Grafana Dashboard
+1. Click the **+** sign on the left panel
+2. Click **Dashboard**
+3. Click **Add query**
+4. For the query, type the query that was exposed in the metrics (**http_requests_total**).
+5. To edit the title, click the settings and change the title accordingly
+
+## Congratulations! You should now have Grafana monitoring services from your namespaces!
+
 
 
 
