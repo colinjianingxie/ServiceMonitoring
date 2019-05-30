@@ -4,13 +4,18 @@ This guide will teach you how to monitor services in a Kubernetes cluster with P
 In addition, this guide will also show you how to create a Go app that exposes the /metrics endpoint.
 ***For those who want to save time, pull the documents from this repository. This tutorial will include the creation of the files in this repository***
 
-## Pre-requisites
+# Table of Contents
+1. [Pre-requisites](#Prereq)
+2. [Create a working directory](#working)
+3. [Third Example](#third-example)
+
+## Pre-requisites <a name="prereq"></a>
 - Basic Kubernetes knowledge
 - Minikube installed
 - Have a Dockerhub account
 - Install Go Lang (Optional)
 
-## Step 1: Create a working directory
+## Step 1: Create a working directory <a name="working"></a>
 
 You will be working in a specified directory throughout this tutorial. 
 For this tutorial, we will be working in the **Downloads/workspace** folder. 
@@ -18,7 +23,7 @@ For this tutorial, we will be working in the **Downloads/workspace** folder.
 1. Go to the local Downloads Folder
 2. Create a folder called **workspace**.
 
-## Step 2: Creating a Custom Go App and Deploying onto Dockerhub (Optional)
+## Step 2: Creating a Custom Go App and Deploying onto Dockerhub (Optional) <a name="go"></a>
 
 If you do not want to create a custom Go App to expose metrics, feel free to use the Docker image (xienokia/hello-app) located on [Dockerhub](https://hub.docker.com/r/xienokia/hello-app) and proceed to Step 3.
 
@@ -132,7 +137,7 @@ CMD ["hello"]
 ...Example: **docker push xienokia/hello-world**
 7. We will be using the image off of **xienokia/hello-world** for this tutorial
 
-## Step 3: Setting up the Kubernetes Cluster
+## Step 3: Setting up the Kubernetes Cluster <a name="kubernetes">
 
 Now we need to setup the Kubernetes Cluster inside Minikube. The process will include the following:
 1. Starting minikube
@@ -202,7 +207,7 @@ and save into a **sample.yaml** file into the **Downloads/workspace** folder (or
 5. To see the result of the deployment, type: **kubectl cluster-info**. Observe the "Kubernetes Master is running at..." IP ...address. In a browser, type the following: **(Kubernetes Master IP address):30901**. For example: (192.168.99.129:30901). 
 6. To go to the metrics, type the following in the address bar: **(Kubernetes Master IP address):30901/metrics**. For example: ...(192.168.99.129:30901/metrics). You should see the *http_requests* metric increase as traffic increases to the site.
 
-### 4. Deploying Prometheus Operator and Service Accounts
+### 4. Deploying Prometheus Operator and Service Accounts <a name="prometheus-operator"></a>
 
 The Prometheus Operator makes the Prometheus configuration Kubernetes native and manages and operates Prometheus and Alertmanager clusters. For more information, please check out the [prometheus operator guide](https://github.com/coreos/prometheus-operator).
 
@@ -405,7 +410,7 @@ and save into a **cluster.yaml** file into the **Downloads/workspace** folder (o
 
 4. Apply the **cluster.yaml** file in minikube by typing: **kubectl apply -f cluster.yaml**
 
-### 5. Deploying and exposing Prometheus
+### 5. Deploying and exposing Prometheus 
 
 Prometheus is a program that can scrape metrics off of various Kubernetes objects. 
 
