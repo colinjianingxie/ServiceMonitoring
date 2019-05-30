@@ -450,3 +450,6 @@ and save into a **expose.yaml** file into the **Downloads/workspace** folder (or
 4. Apply the **expose.yaml** file in minikube by typing: **kubectl apply -f expose.yaml**
 ...Doing so will help expose Prometheus to the 30900 port (specified in the **expose.yaml** file)
 5. To check if Prometheus is installed correctly, type: **kubectl cluster-info** to obtain the Kubernetes Master IP. 
+6. In the browser, type: **(Kubernetes Master IP):30900** and Prometheus should pop up. 
+
+
