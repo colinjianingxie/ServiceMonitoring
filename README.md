@@ -359,6 +359,7 @@ metadata:
   namespace: default
 ```
 and save into a **prometheus-operator.yaml** file into the **Downloads/workspace** folder (or wherever you choose to save it).
+
 2. Apply the **prometheus-operator.yaml** file in minikube by typing: **kubectl apply -f prometheus-operator.yaml**
 3. Now, Copy the following:
 
@@ -401,6 +402,7 @@ subjects:
   namespace: default
 ```
 and save into a **cluster.yaml** file into the **Downloads/workspace** folder (or wherever you choose to save it).
+
 4. Apply the **cluster.yaml** file in minikube by typing: **kubectl apply -f cluster.yaml**
 5. 
 
