@@ -138,7 +138,8 @@ Now we need to setup the Kubernetes Cluster inside Minikube. The process will in
 1. Starting minikube
 2. Creating custom namespaces
 3. Deploying services
-4. Deploying Prometheus
+4. Deploying and exposing Prometheus
+5. Deploying service monitors
 
 ### 1. Starting Minikube
 
@@ -154,7 +155,54 @@ Now we need to setup the Kubernetes Cluster inside Minikube. The process will in
 
 ### 3. Deploying services
 
-1. 
+1. Make sure you are still in the **Downloads/workspace** folder (or your designated workspace folder)
+2. Copy the following:
+```
+kind: Service
+apiVersion: v1
+metadata:
+  name: example-service-test
+  namespace: test
+  labels:
+    app: example-service-test
+spec:
+  selector:
+    app: example-service-test
+  ports:
+  - name: web
+    port: 8080
+    nodePort: 30901
+  type: NodePort
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: example-service-test
+  namespace: test
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: example-service-test
+    spec:
+      containers:
+      - name: example-service-test
+        image: xienokia/hello-app
+        ports:
+        - name: web
+          containerPort: 8080
+```
+and save into a **sample.yaml** file into the **Downloads/workspace** folder (or wherever you choose to save it).
+2. Apply the **sample.yaml** file in minikube by typing: **kubectl apply -f sample.yaml**
+...Note: if you chose to save the yaml file into a custom location, type the command: **kubectl apply -f (sample.yaml file location)**
+3. Make sure the pod is working by running: **kubectl -n test get pods**
+4. To check if the service is working inside the namespace type: **kubectl -n test get svc** 
+5. To see the result of the deployment, type: **kubectl cluster-info**. Observe the "Kubernetes Master is running at..." IP ...address. In a browser, type the following: **(Kubernetes Master IP address):30901**. For example: (192.168.99.129:30901). 
+6. To go to the metrics, type the following in the address bar: **(Kubernetes Master IP address):30901/metrics**. For example: ...(192.168.99.129:30901/metrics). You should see the *http_requests* metric increase as traffic increases to the site.
+
+### 4. 
+
 
 
 
