@@ -1,4 +1,4 @@
-# ServiceMonitoring (Mac OS)
+# Service Monitoring (Mac OS)
 
 This guide will teach you how to monitor services in a Kubernetes cluster with Prometheus and Grafana.
 In addition, this guide will also show you how to create a Go app that exposes the /metrics endpoint.
