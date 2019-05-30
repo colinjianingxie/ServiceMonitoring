@@ -405,7 +405,7 @@ and save into a **cluster.yaml** file into the **Downloads/workspace** folder (o
 
 4. Apply the **cluster.yaml** file in minikube by typing: **kubectl apply -f cluster.yaml**
 
-### 4. Deploying and exposing Prometheus
+### 5. Deploying and exposing Prometheus
 
 Prometheus is a program that can scrape metrics off of various Kubernetes objects. 
 
@@ -450,6 +450,41 @@ and save into a **expose.yaml** file into the **Downloads/workspace** folder (or
 4. Apply the **expose.yaml** file in minikube by typing: **kubectl apply -f expose.yaml**
 ...Doing so will help expose Prometheus to the 30900 port (specified in the **expose.yaml** file)
 5. To check if Prometheus is installed correctly, type: **kubectl cluster-info** to obtain the Kubernetes Master IP. 
-6. In the browser, type: **(Kubernetes Master IP):30900** and Prometheus should pop up. 
+6. In the browser, type: **(Kubernetes Master IP):30900** and Prometheus should pop up. For example: **192.168.99.129:30900**
+
+### 6. Deploying Service Monitors 
+
+To monitor the services in each namespace, we need to add a service monitor to the namespace. 
+
+1. Copy the following:
+```
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: example-service-test
+  labels:
+    team: frontendtest1
+  namespace: test
+spec:
+  selector:
+    matchLabels:
+      app: example-service-test
+  endpoints:
+  - port: web
+
+```
+and save into a **service-monitors.yaml** file into the **Downloads/workspace** folder (or wherever you choose to save it).
+
+2. Apply the **service-monitors.yaml** file in minikube by typing: **kubectl apply -f service-monitors.yaml**
+3. We should now be able to see the service monitors in Prometheus. Go to Prometheus by typing: **(Kubernetes Master ...IP):30900** in the browser. 
+4. Click **Status -> Service Discovery** in the menu bar
+5. Make sure the service is being discovered by the service monitor
+6. Click **Status -> Targets** in the menu bar
+7. Make sure the Targeted service monitor is being shown.
+8. If all goes well, click **Graph** in the menu bar, and type the query: **http_requests_total**
+9. Going to the app should now trigger http requests, which prometheus can show
+
+
+
 
 
