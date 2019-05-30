@@ -404,5 +404,49 @@ subjects:
 and save into a **cluster.yaml** file into the **Downloads/workspace** folder (or wherever you choose to save it).
 
 4. Apply the **cluster.yaml** file in minikube by typing: **kubectl apply -f cluster.yaml**
-5. 
 
+### 4. Deploying and exposing Prometheus
+
+Prometheus is a program that can scrape metrics off of various Kubernetes objects. 
+
+1. Copy the following:
+```
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: prometheus
+spec:
+  serviceAccountName: prometheus
+  serviceMonitorNamespaceSelector: {} # auto discovers all namespaces
+  serviceMonitorSelector: {} # auto discovers all monitors configured one line above
+  resources:
+    requests:
+      memory: 400Mi
+  enableAdminAPI: false
+```
+and save into a **prometheus.yaml** file into the **Downloads/workspace** folder (or wherever you choose to save it).
+
+2. Apply the **prometheus.yaml** file in minikube by typing: **kubectl apply -f prometheus.yaml**
+3. Now, Copy the following:
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+spec:
+  type: NodePort
+  ports:
+  - name: web
+    nodePort: 30900
+    port: 9090
+    protocol: TCP
+    targetPort: web
+  selector:
+    prometheus: prometheus
+```
+and save into a **expose.yaml** file into the **Downloads/workspace** folder (or wherever you choose to save it).
+
+4. Apply the **expose.yaml** file in minikube by typing: **kubectl apply -f expose.yaml**
+...Doing so will help expose Prometheus to the 30900 port (specified in the **expose.yaml** file)
+5. To check if Prometheus is installed correctly, type: **kubectl cluster-info** to obtain the Kubernetes Master IP. 
