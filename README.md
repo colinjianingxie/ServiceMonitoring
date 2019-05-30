@@ -88,7 +88,58 @@ func main() {
 5. Navigate inside the Terminal to the **Downloads/workspace/src/hello** folder
 6. Run the following commands: **go build**
 7. By running that, it will create a build file, which to compile, run the following command: **./hello**
-8. The server will now run. To run the demo site, navigate to: **localhost:8080** in your browser. To get the metrics, go to **localhost:8080/metrics** in 	your browser.  
-9. 
+8. The server will now run. To run the demo site, navigate to: **localhost:8080** in your browser. To get the metrics, go to ...**localhost:8080/metrics** in your browser.  
+
+Now we need to create a docker image of the hello Go App we just created and upload the image onto Dockerhub.
+1. Create a Dockerfile inside the **Downloads/workspace/src/hello** folder. The file shouldn't have an extension and should be ...called Dockerfile, case sensitive. 
+2. Inside the Dockerfile write the following:
+...**Note: You might need to edit the file Maintainer with your own name and email**
+```
+
+# Dockerfile References: https://docs.docker.com/engine/reference/builder/
+# Start from golang v1.11 base image
+FROM golang:1.12
+
+# Add Maintainer Info
+LABEL maintainer="inputnamehere <input_email@here>"
+
+# Set the Current Working Directory inside the container
+WORKDIR $GOPATH/src/hello/hello
+
+# Copy everything from the current directory to the PWD(Present Working Directory) inside the container
+COPY . .
+
+# Download all the dependencies
+# https://stackoverflow.com/questions/28031603/what-do-three-dots-mean-in-go-command-line-invocations
+RUN go get -d -v ./...
+
+# Install the package
+RUN go install -v ./...
+
+# This container exposes port 8080 to the outside world
+EXPOSE 8080
+
+# Run the executable
+CMD ["hello"]
+
+```
+3. Inside the terminal, go to the **Downloads/workspace/src/hello** folder
+4. Create the image by running the command: **docker build . -t (insert Dockerhub username)/(insert Dockerhub repository)**
+...Example: **docker build . -t xienokia/hello-world**
+5. Login to your Dockerhub by running the command: **docker login**
+6. Now, push the image by running: **docker push (insert Dockerhub username)/(insert Dockerhub repository)**
+...Example: **docker push xienokia/hello-world**
+7. We will be using the image off of ***xienokia/hello-world*** for this tutorial
+
+## Step 3: Setting up the Kubernetes Cluster
+
+Now we need to setup the Kubernetes Cluster inside Minikube. The process will include the following:
+1. Starting minikube
+2. Creating custom namespaces
+3. Deploying services
+4. Deploying Prometheus
+
+
+
 
 
