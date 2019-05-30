@@ -1,4 +1,4 @@
-# ServiceMonitoring (MAC OS)
+# ServiceMonitoring (Mac OS)
 
 This guide will teach you how to monitor services in a Kubernetes cluster with Prometheus and Grafana.
 In addition, this guide will also show you how to create a Go app that exposes the /metrics endpoint.
@@ -138,8 +138,9 @@ Now we need to setup the Kubernetes Cluster inside Minikube. The process will in
 1. Starting minikube
 2. Creating custom namespaces
 3. Deploying services
-4. Deploying and exposing Prometheus
-5. Deploying service monitors
+4. Deploying Prometheus Operator and Service Accounts
+5. Deploying and exposing Prometheus
+6. Deploying service monitors
 
 ### 1. Starting Minikube
 
@@ -201,10 +202,205 @@ and save into a **sample.yaml** file into the **Downloads/workspace** folder (or
 5. To see the result of the deployment, type: **kubectl cluster-info**. Observe the "Kubernetes Master is running at..." IP ...address. In a browser, type the following: **(Kubernetes Master IP address):30901**. For example: (192.168.99.129:30901). 
 6. To go to the metrics, type the following in the address bar: **(Kubernetes Master IP address):30901/metrics**. For example: ...(192.168.99.129:30901/metrics). You should see the *http_requests* metric increase as traffic increases to the site.
 
-### 4. 
+### 4. Deploying Prometheus Operator and Service Accounts
 
+The Prometheus Operator makes the Prometheus configuration Kubernetes native and manages and operates Prometheus and Alertmanager clusters. For more information, please check out the [prometheus operator guide](https://github.com/coreos/prometheus-operator).
 
+1. Copy the following:
+```
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    apps.kubernetes.io/component: controller
+    apps.kubernetes.io/name: prometheus-operator
+    apps.kubernetes.io/version: v0.29.0
+  name: prometheus-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: prometheus-operator
+subjects:
+- kind: ServiceAccount
+  name: prometheus-operator
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    apps.kubernetes.io/component: controller
+    apps.kubernetes.io/name: prometheus-operator
+    apps.kubernetes.io/version: v0.29.0
+  name: prometheus-operator
+rules:
+- apiGroups:
+  - apiextensions.k8s.io
+  resources:
+  - customresourcedefinitions
+  verbs:
+  - '*'
+- apiGroups:
+  - monitoring.coreos.com
+  resources:
+  - alertmanagers
+  - prometheuses
+  - prometheuses/finalizers
+  - alertmanagers/finalizers
+  - servicemonitors
+  - prometheusrules
+  verbs:
+  - '*'
+- apiGroups:
+  - apps
+  resources:
+  - statefulsets
+  verbs:
+  - '*'
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - secrets
+  verbs:
+  - '*'
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - list
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - services
+  - services/finalizers
+  - endpoints
+  verbs:
+  - get
+  - create
+  - update
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  labels:
+    apps.kubernetes.io/component: controller
+    apps.kubernetes.io/name: prometheus-operator
+    apps.kubernetes.io/version: v0.29.0
+  name: prometheus-operator
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      apps.kubernetes.io/component: controller
+      apps.kubernetes.io/name: prometheus-operator
+  template:
+    metadata:
+      labels:
+        apps.kubernetes.io/component: controller
+        apps.kubernetes.io/name: prometheus-operator
+        apps.kubernetes.io/version: v0.29.0
+    spec:
+      containers:
+      - args:
+        - --kubelet-service=kube-system/kubelet
+        - --logtostderr=true
+        - --config-reloader-image=quay.io/coreos/configmap-reload:v0.0.1
+        - --prometheus-config-reloader=quay.io/coreos/prometheus-config-reloader:v0.29.0
+        image: quay.io/coreos/prometheus-operator:v0.29.0
+        name: prometheus-operator
+        ports:
+        - containerPort: 8080
+          name: http
+        resources:
+          limits:
+            cpu: 200m
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+      serviceAccountName: prometheus-operator
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    apps.kubernetes.io/component: controller
+    apps.kubernetes.io/name: prometheus-operator
+    apps.kubernetes.io/version: v0.29.0
+  name: prometheus-operator
+  namespace: default
+```
+and save into a **prometheus-operator.yaml** file into the **Downloads/workspace** folder (or wherever you choose to save it).
+2. Apply the **prometheus-operator.yaml** file in minikube by typing: **kubectl apply -f prometheus-operator.yaml**
+3. Now, Copy the following:
 
-
-
+```
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: prometheus
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: prometheus
+rules:
+- apiGroups: [""]
+  resources:
+  - nodes
+  - services
+  - endpoints
+  - pods
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources:
+  - configmaps
+  verbs: ["get"]
+- nonResourceURLs: ["/metrics"]
+  verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: prometheus
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: prometheus
+subjects:
+- kind: ServiceAccount
+  name: prometheus
+  namespace: default
+```
+and save into a **cluster.yaml** file into the **Downloads/workspace** folder (or wherever you choose to save it).
+4. Apply the **cluster.yaml** file in minikube by typing: **kubectl apply -f cluster.yaml**
+5. 
 
