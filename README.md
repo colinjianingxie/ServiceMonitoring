@@ -1,10 +1,11 @@
-# ServiceMonitoring
+# ServiceMonitoring (MAC OS)
 
 This guide will teach you how to monitor services in a Kubernetes cluster with Prometheus and Grafana.
 In addition, this guide will also show you how to create a Go app that exposes the /metrics endpoint.
-For those who want to save time, pull the documents from this repository.
+***For those who want to save time, pull the documents from this repository. This tutorial will include the creation of the files in this repository***
 
 ## Pre-requisites
+- Basic Kubernetes knowledge
 - Minikube installed
 - Have a Dockerhub account
 - Install Go Lang (Optional)
@@ -129,7 +130,7 @@ CMD ["hello"]
 5. Login to your Dockerhub by running the command: **docker login**
 6. Now, push the image by running: **docker push (insert Dockerhub username)/(insert Dockerhub repository)**
 ...Example: **docker push xienokia/hello-world**
-7. We will be using the image off of ***xienokia/hello-world*** for this tutorial
+7. We will be using the image off of **xienokia/hello-world** for this tutorial
 
 ## Step 3: Setting up the Kubernetes Cluster
 
@@ -138,6 +139,22 @@ Now we need to setup the Kubernetes Cluster inside Minikube. The process will in
 2. Creating custom namespaces
 3. Deploying services
 4. Deploying Prometheus
+
+### 1. Starting Minikube
+
+1. Navigate to the **Downloads/workspace** folder through the Terminal
+2. Type the command: **minikube start**
+3. Note: to stop Minikube, type: **minikube stop** and to delete Minikube, type: **minikube delete**
+
+### 2. Creating custom namespaces
+
+1. Create a namespace called **test** by typing the command: **kubectl create namespace test**
+2. To verify you have created the **test** namespace, type the command: **kubectl get namespaces**
+...**test** should appear as one of the namespaces.
+
+### 3. Deploying services
+
+1. 
 
 
 
