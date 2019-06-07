@@ -202,11 +202,16 @@ spec:
           containerPort: 8080
 ```
 and save into a **sample.yaml** file into the **Downloads/workspace** folder (or wherever you choose to save it).
+
 2. Apply the **sample.yaml** file in minikube by typing: **kubectl apply -f sample.yaml**
 Note: if you chose to save the yaml file into a custom location, type the command: **kubectl apply -f (sample.yaml file location)**
+
 3. Make sure the pod is working by running: **kubectl -n test get pods**
+
 4. To check if the service is working inside the namespace type: **kubectl -n test get svc** 
+
 5. To see the result of the deployment, type: **kubectl cluster-info**. Observe the "Kubernetes Master is running at..." IP address. In a browser, type the following: **(Kubernetes Master IP address):30901**. For example: (192.168.99.129:30901). 
+
 6. To go to the metrics, type the following in the address bar: **(Kubernetes Master IP address):30901/metrics**. For example: (192.168.99.129:30901/metrics). You should see the *http_requests* metric increase as traffic increases to the site.
 
 ### 4. Deploying Prometheus Operator and Service Accounts <a name="prometheus-operator"></a>
